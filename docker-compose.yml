@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    restart: always
+    ports:
+      - "3010:3010"
+    command: npm start
+    environment:
+      NODE_ENV: development

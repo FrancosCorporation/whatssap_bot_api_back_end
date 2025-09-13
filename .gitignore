@@ -1,0 +1,7 @@
+# Ignorar pastas em qualquer lugar do projeto
+**/node_modules/
+**/downloads/
+**/venv/
+**/files/
+**/.wwebjs_cache/
+**/sessions/

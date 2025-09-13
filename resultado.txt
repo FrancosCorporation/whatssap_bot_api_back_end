@@ -1,0 +1,27 @@
+2023-06-01 | sell | Entrada: 111575 | Stop: 111755 | Take: 109675 | Contratos: 2 | Resultado: 2130 pontos | R$ 852.0 | Inversões: 0 | Médio ativo: False
+2023-06-06 | sell | Entrada: 115300 | Stop: 115430 | Take: 113400 | Contratos: 2 | Resultado: 1905 pontos | R$ 762.0 | Inversões: 0 | Médio ativo: False
+2023-06-29 | sell | Entrada: 120765 | Stop: 120920 | Take: 118865 | Contratos: 2 | Resultado: 2305 pontos | R$ 922.0 | Inversões: 0 | Médio ativo: False
+2023-08-22 | sell | Entrada: 118340 | Stop: 118445 | Take: 116440 | Contratos: 2 | Resultado: 1135 pontos | R$ 454.0 | Inversões: 0 | Médio ativo: False
+2023-09-11 | sell | Entrada: 118540 | Stop: 118665 | Take: 116640 | Contratos: 2 | Resultado: 955 pontos | R$ 382.0 | Inversões: 0 | Médio ativo: False
+2023-10-09 | sell | Entrada: 115690 | Stop: 115790 | Take: 113790 | Contratos: 2 | Resultado: 1695 pontos | R$ 678.0 | Inversões: 0 | Médio ativo: False
+2023-11-14 | sell | Entrada: 124615 | Stop: 124965 | Take: 122715 | Contratos: 2 | Resultado: 2925 pontos | R$ 1170.0 | Inversões: 0 | Médio ativo: False
+2023-12-13 | sell | Entrada: 132210 | Stop: 132440 | Take: 130310 | Contratos: 2 | Resultado: 3780 pontos | R$ 1512.0 | Inversões: 0 | Médio ativo: False
+2024-02-19 | sell | Entrada: 131035 | Stop: 131125 | Take: 129135 | Contratos: 2 | Resultado: 615 pontos | R$ 246.0 | Inversões: 0 | Médio ativo: False
+2024-05-22 | buy | Entrada: 125680 | Stop: 125475 | Take: 127580 | Contratos: 2 | Resultado: 1990 pontos | R$ 796.0 | Inversões: 0 | Médio ativo: False
+2024-09-19 | buy | Entrada: 133715 | Stop: 133595 | Take: 135615 | Contratos: 2 | Resultado: 2245 pontos | R$ 898.0 | Inversões: 0 | Médio ativo: False
+2024-09-20 | buy | Entrada: 131610 | Stop: 131425 | Take: 133510 | Contratos: 2 | Resultado: 2295 pontos | R$ 918.0 | Inversões: 0 | Médio ativo: False
+
+📈 Estatísticas Finais:
+Take: 1900
+🔢 Total de pontos unitários: 23975
+💰 Total em reais: R$ 9590.0
+📊 Média por dia (pontos unit.): 1997.92
+📊 Média por dia (reais): R$ 799.17
+✅ Taxa de acerto: 100.0%
+
+🔹 Stops uma vez: 0
+🔹 Operações com inversões: 0
+🔹 Operações que pegaram o médio: 0
+🔹 Pegaram o médio e deram Stop: 0
+🔹 Foram pro Gain sem dar Stop: 12
+🔹 Total que foram pro Gain: 12
