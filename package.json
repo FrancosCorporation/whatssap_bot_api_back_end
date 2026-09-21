@@ -1,7 +1,8 @@
 {
   "name": "whatssap_bot_api_back_end",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "description": "API REST (Node/Express + MongoDB) para autenticação de usuários e sessões do WhatsApp via whatsapp-web.js.",
   "main": "src/server.js",
   "dependencies": {
     "abort-controller": "^3.0.0",

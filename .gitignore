@@ -5,3 +5,22 @@
 **/files/
 **/.wwebjs_cache/
 **/sessions/
+
+# Variaveis de ambiente (nunca versionar valores reais)
+.env
+.env.*
+!.env.example
+
+# Logs e artefatos gerados
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+dist/
+build/
+.vercel/
+
+# Sistema operacional / editor
+.DS_Store
+Thumbs.db
