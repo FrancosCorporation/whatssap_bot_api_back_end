@@ -82,7 +82,6 @@ whatssap_bot_api_back_end/
 │   ├── models/clients.js          # mapa de sessões ativas
 │   ├── routes/                    # auth, userRoutes, whatsappRoutes
 │   └── utils/whatsappSessionManager.js
-├── Antigos/                       # protótipos anteriores (áudio, IA, web scraping)
 ├── Dockerfile
 ├── docker-compose.yml
 └── build.bat
