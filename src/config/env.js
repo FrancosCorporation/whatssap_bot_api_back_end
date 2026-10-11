@@ -20,7 +20,7 @@ function readPort(value) {
 }
 
 function readCorsOrigins(value) {
-  const entries = (value || 'http://localhost:3000').split(',').map((item) => item.trim());
+  const entries = (value || 'http://localhost:3000,http://localhost:5173').split(',').map((item) => item.trim());
   for (const entry of entries) {
     let parsed;
     try {

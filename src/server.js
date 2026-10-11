@@ -24,7 +24,7 @@ app.use(cors({
     callback(null, origin);
   },
   credentials: true,
-  methods: ['GET', 'HEAD', 'POST', 'OPTIONS'],
+  methods: ['GET', 'HEAD', 'POST', 'PUT', 'OPTIONS'],
 }));
 app.use(express.json({ limit: '100kb' }));
 app.use(express.urlencoded({ extended: false, limit: '100kb' }));

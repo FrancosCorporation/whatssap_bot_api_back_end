@@ -9,7 +9,10 @@ const { loginLimiter, registerLimiter } = require('../middlewares/rateLimiters')
 // Rota de registro
 router.post('/register', registerLimiter, UserController.register);
 router.post('/login', loginLimiter, UserController.login);
+router.post('/logout', UserController.logout);
 router.get('/api/check-session-status', verificarToken, whatsappController.checkSessionStatus);
+router.get('/api/user/profile', verificarToken, UserController.profile);
+router.put('/api/user/settings', verificarToken, UserController.updateSettings);
 // Outras rotas — protegidas (D3: exigem JWT; criar/listar usuários só para autenticados)
 router.get('/', verificarToken, UserController.index);
 router.get('/all', verificarToken, UserController.allusers);

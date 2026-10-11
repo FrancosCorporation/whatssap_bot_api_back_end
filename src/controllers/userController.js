@@ -24,6 +24,58 @@ const userController = {
     return res.status(501).json({ message: 'Cadastro de usuário administrativo não implementado.' });
   },
 
+  profile: async (req, res) => {
+    try {
+      const users = await getCollection('users');
+      const user = await users.findOne(
+        { email: req.user.email },
+        { projection: { name: 1, email: 1, createdAt: 1, whatsappNumber: 1, allowPauseContinue: 1 } },
+      );
+      if (!user) return res.status(404).json({ message: 'Usuário não encontrado.' });
+
+      return res.status(200).json({
+        name: user.name,
+        email: user.email,
+        createdAt: user.createdAt || null,
+        whatsappNumber: user.whatsappNumber || null,
+        allowPauseContinue: user.allowPauseContinue !== false,
+      });
+    } catch (error) {
+      console.error('[User] Profile lookup failed:', error.name, error.code || 'unknown');
+      return res.status(500).json({ message: 'Erro interno no servidor.' });
+    }
+  },
+
+  updateSettings: async (req, res) => {
+    if (typeof req.body?.allowPauseContinue !== 'boolean') {
+      return res.status(400).json({ message: 'Informe uma configuração válida.' });
+    }
+
+    try {
+      const users = await getCollection('users');
+      const result = await users.updateOne(
+        { email: req.user.email },
+        { $set: { allowPauseContinue: req.body.allowPauseContinue, updatedAt: new Date() } },
+      );
+      if (!result.matchedCount) return res.status(404).json({ message: 'Usuário não encontrado.' });
+
+      return res.status(200).json({ allowPauseContinue: req.body.allowPauseContinue });
+    } catch (error) {
+      console.error('[User] Settings update failed:', error.name, error.code || 'unknown');
+      return res.status(500).json({ message: 'Erro interno no servidor.' });
+    }
+  },
+
+  logout: (_req, res) => {
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: config.nodeEnv === 'production',
+      sameSite: 'strict',
+      path: '/',
+    });
+    return res.status(200).json({ message: 'Sessão encerrada.' });
+  },
+
   login: async (req, res) => {
     try {
       const email = normalizeEmail(req.body?.email);
@@ -62,10 +114,7 @@ const userController = {
         path: '/',
       });
 
-      return res.json({
-        token,
-        user: { name: user.name, email: user.email },
-      });
+      return res.json({ user: { name: user.name, email: user.email } });
     } catch (error) {
       console.error('[Auth] Login failed:', error.name, error.code || 'unknown');
       return res.status(500).json({ message: 'Erro interno no servidor.' });

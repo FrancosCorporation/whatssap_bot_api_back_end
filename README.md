@@ -52,12 +52,14 @@ CORS exige uma origem permitida e usa cookies apenas com credenciais habilitadas
 
 ## Fluxo de pareamento
 
-1. Crie uma conta com POST /register e entre com POST /login.
-2. Envie o JWT retornado em Authorization: Bearer <token>.
+1. Crie uma conta com POST /register e entre com POST /login; o navegador recebe um cookie HttpOnly.
+2. Envie as chamadas do painel com credenciais de cookie habilitadas.
 3. Chame POST /api/whatsapp/start. A resposta contém QR em base64 para exibição no front-end.
 4. Leia o QR pelo menu de dispositivos conectados do WhatsApp.
 5. Consulte GET /api/check-session-status para obter o estado.
 6. Envie mensagens com POST /api/whatsapp/send e encerre a conexão local com POST /api/whatsapp/stop.
+
+O cookie é a sessão usada pelo painel. A API não retorna o JWT no corpo do login. Clientes fora do navegador podem usar Bearer JWT quando obtiverem um token por um fluxo próprio.
 
 O limite é de 30 mensagens por minuto e 500 por dia por usuário. Até três sessões globais podem conectar ao mesmo tempo; novas tentativas recebem HTTP 429 quando o limite é atingido. /stop encerra o navegador, preservando o pareamento local.
 
@@ -67,8 +69,11 @@ O limite é de 30 mensagens por minuto e 500 por dia por usuário. Até três se
 |---|---|---|---|
 | GET | /healthz | não | Healthcheck HTTP |
 | POST | /register | não | Cadastro com bcrypt |
-| POST | /login | não | Emite JWT no corpo e cookie HttpOnly |
+| POST | /login | não | Cria cookie HttpOnly e retorna o perfil básico |
+| POST | /logout | não | Remove o cookie de sessão |
 | GET | /verify | sim | Verifica o token |
+| GET | /api/user/profile | sim | Retorna o perfil e as preferências do usuário atual |
+| PUT | /api/user/settings | sim | Atualiza a preferência de comandos de pausa/retomada |
 | GET | /api/check-session-status | sim | Estado da sessão WhatsApp |
 | POST | /api/whatsapp/start | sim | Inicia o pareamento |
 | POST | /api/whatsapp/stop | sim | Encerra a conexão local |

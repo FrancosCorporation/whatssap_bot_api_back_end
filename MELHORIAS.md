@@ -25,6 +25,8 @@ Atualizado em 11/10/2026. Itens implementados nesta rodada, exceto a suíte de t
 | DEVOPS-02 — porta fixa | HOST/PORT validados por ambiente |
 | DOC-01 — README sem ambiente/QR/Chromium | Atualizado |
 | DOC-02 — SECURITY.md | Adicionado |
+| INT-01 — endpoints de perfil e preferências para o painel | Implementado para o usuário autenticado |
+| INT-02 — logout de cookie e contrato cookie-only para navegador | Implementado |
 
 ## Segurança e funcionamento
 
@@ -37,6 +39,8 @@ Atualizado em 11/10/2026. Itens implementados nesta rodada, exceto a suíte de t
 - O Compose sobe MongoDB 8 com volume e healthcheck para desenvolvimento; Mongo e API publicam portas apenas em loopback.
 - O Chromium recebe apenas variáveis necessárias ao navegador. JWT_SECRET e MONGO_URI não são repassados ao processo do browser.
 - O CORS é uma allowlist exata, com credenciais habilitadas só para as origens listadas. Helmet e respostas de erro genéricas reduzem exposição.
+- O painel Vite usa a origem local `http://localhost:3000`; ela está incluída no CORS padrão. `GET /api/user/profile` devolve somente campos do usuário atual, `PUT /api/user/settings` grava a preferência e `POST /logout` remove o cookie.
+- O endpoint de login não retorna o JWT no corpo; navegadores usam o cookie HttpOnly. Clientes de API podem continuar usando Bearer quando obtiverem um token por outro fluxo.
 - O helper de busca web com Puppeteer não era chamado por nenhuma rota. Foi removido junto com as dependências usadas só por ele; páginas arbitrárias não são carregadas pelo bot.
 - As dependências diretas foram reduzidas de 479 para 11. Puppeteer foi fixado por override em 25.13.0 para eliminar os alertas transitivos conhecidos; a compatibilidade do pareamento real não foi exercitada nesta rodada.
 
