@@ -1,0 +1,10 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+node_modules
+src/sessions
+**/sessions
+*.log
+npm-debug.log*

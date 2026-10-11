@@ -1,20 +1,37 @@
 const jwt = require('jsonwebtoken');
+const config = require('../config/env');
 
-const verificarToken = (req, res, next) => {
-  // Tenta pegar o token tanto do header quanto do cookie
-  const token = req.header('Authorization')?.replace('Bearer ', '') || req.cookies.token;
+function getBearerToken(header) {
+  if (typeof header !== 'string') return undefined;
+  const match = /^Bearer\s+([^\s]+)$/i.exec(header.trim());
+  return match?.[1];
+}
 
+function verificarToken(req, res, next) {
+  const token = getBearerToken(req.headers.authorization) || req.cookies?.token;
   if (!token) {
     return res.status(401).json({ message: 'Token não fornecido' });
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded;
-    next();
-  } catch (err) {
+    const decoded = jwt.verify(token, config.jwtSecret, {
+      algorithms: ['HS256'],
+      issuer: config.jwtIssuer,
+      audience: config.jwtAudience,
+    });
+
+    if (!decoded || typeof decoded !== 'object' || typeof decoded.email !== 'string' || !decoded.email) {
+      return res.status(401).json({ message: 'Token inválido' });
+    }
+
+    req.user = {
+      id: typeof decoded.id === 'string' ? decoded.id : decoded.email,
+      email: decoded.email,
+    };
+    return next();
+  } catch {
     return res.status(401).json({ message: 'Token inválido' });
   }
-};
+}
 
 module.exports = verificarToken;

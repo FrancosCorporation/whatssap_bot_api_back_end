@@ -3,15 +3,17 @@ const express = require('express');
 const router = express.Router();
 const UserController = require('../controllers/userController');
 const whatsappController = require('../controllers/whatsappController');
+const verificarToken = require('../middlewares/authMiddleware');
+const { loginLimiter, registerLimiter } = require('../middlewares/rateLimiters');
 
 // Rota de registro
-router.post('/register', UserController.register);
-router.post('/login', UserController.login);
-router.get('/api/check-session-status', whatsappController.checkSessionStatus);
-// Outras rotas
-router.get('/', UserController.index);
-router.get('/all', UserController.allusers);
-router.get('/:id', UserController.show);
-router.post('/create', UserController.create);
+router.post('/register', registerLimiter, UserController.register);
+router.post('/login', loginLimiter, UserController.login);
+router.get('/api/check-session-status', verificarToken, whatsappController.checkSessionStatus);
+// Outras rotas — protegidas (D3: exigem JWT; criar/listar usuários só para autenticados)
+router.get('/', verificarToken, UserController.index);
+router.get('/all', verificarToken, UserController.allusers);
+router.get('/:id', verificarToken, UserController.show);
+router.post('/create', verificarToken, UserController.create);
 
 module.exports = router;

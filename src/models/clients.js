@@ -1,2 +1,1 @@
-const clients = {};
-module.exports = clients;
+module.exports = new Map();

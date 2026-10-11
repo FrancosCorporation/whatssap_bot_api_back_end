@@ -1,10 +1,46 @@
-version: '3.8'
 services:
+  mongo:
+    image: mongo:8.0
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:27018:27017"
+    volumes:
+      - mongo_data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.runCommand({ ping: 1 }).ok"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
   web:
     build: .
-    restart: always
-    ports:
-      - "3010:3010"
-    command: npm start
+    restart: unless-stopped
+    depends_on:
+      mongo:
+        condition: service_healthy
+    env_file:
+      - .env
     environment:
-      NODE_ENV: development
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: ${PORT:-3005}
+      MONGO_URI: ${MONGO_URI_CONTAINER:-mongodb://mongo:27017}
+      HOME: /tmp
+      TMPDIR: /tmp
+      PUPPETEER_SKIP_DOWNLOAD: "true"
+      PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium
+    ports:
+      - "127.0.0.1:${PORT:-3005}:${PORT:-3005}"
+    volumes:
+      - whatsapp_sessions:/app/src/sessions
+    read_only: true
+    tmpfs:
+      - /tmp:rw,nosuid,size=512m
+    shm_size: 1gb
+    cap_drop:
+      - ALL
+
+volumes:
+  mongo_data:
+  whatsapp_sessions:
