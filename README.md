@@ -61,7 +61,7 @@ CORS exige uma origem permitida e usa cookies apenas com credenciais habilitadas
 
 O cookie é a sessão usada pelo painel. A API não retorna o JWT no corpo do login. Clientes fora do navegador podem usar Bearer JWT quando obtiverem um token por um fluxo próprio.
 
-O limite é de 30 mensagens por minuto e 500 por dia por usuário. Até três sessões globais podem conectar ao mesmo tempo; novas tentativas recebem HTTP 429 quando o limite é atingido. /stop encerra o navegador, preservando o pareamento local.
+O limite é de 30 mensagens por minuto e 500 por dia por usuário. Até três sessões globais podem conectar ao mesmo tempo; novas tentativas recebem HTTP 429 quando o limite é atingido. `/stop` encerra o navegador, preservando o pareamento local. Os diretórios novos usam um identificador hash por conta. Pastas antigas migram automaticamente quando o ID legado pertence a uma única conta; se várias contas compartilhavam o mesmo ID antigo, elas precisam parear novamente por QR.
 
 ## Rotas
 

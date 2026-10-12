@@ -1,3 +1,4 @@
+const crypto = require('node:crypto');
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, LocalAuth } = require('whatsapp-web.js');
@@ -8,8 +9,20 @@ const clients = require('../models/clients');
 
 const sessionsPath = path.resolve(__dirname, '..', 'sessions');
 
-function clientIdForEmail(email) {
+function normalizeEmail(email) {
+  return typeof email === 'string' ? email.trim().toLowerCase() : '';
+}
+
+function legacyClientIdForEmail(email) {
   return email.toLowerCase().replace(/[^a-zA-Z0-9_-]/g, '_').slice(0, 120);
+}
+
+function clientIdForEmail(email) {
+  return crypto.createHash('sha256').update(normalizeEmail(email), 'utf8').digest('hex');
+}
+
+function sessionDirectoryPath(clientId) {
+  return path.join(sessionsPath, `session-${clientId}`);
 }
 
 function browserEnvironment() {
@@ -120,30 +133,60 @@ function waitForRecord(record, timeoutMs) {
   });
 }
 
-function hasSavedSession(email) {
-  const sessionPath = path.join(sessionsPath, 'session-' + clientIdForEmail(email));
+function inspectSessionDirectory(directoryPath) {
   try {
-    const stats = fs.lstatSync(sessionPath);
-    return stats.isDirectory() && !stats.isSymbolicLink();
-  } catch {
+    const stats = fs.lstatSync(directoryPath);
+    return { exists: true, isSafeDirectory: stats.isDirectory() && !stats.isSymbolicLink() };
+  } catch (error) {
+    return { exists: error.code !== 'ENOENT', isSafeDirectory: false };
+  }
+}
+
+function hasSavedSession(email, legacyIdCounts) {
+  const currentPath = sessionDirectoryPath(clientIdForEmail(email));
+  const current = inspectSessionDirectory(currentPath);
+  if (current.isSafeDirectory) return true;
+  if (current.exists) return false;
+
+  const legacyId = legacyClientIdForEmail(email);
+  const legacyPath = sessionDirectoryPath(legacyId);
+  const legacy = inspectSessionDirectory(legacyPath);
+  if (!legacy.isSafeDirectory) return false;
+  if (legacyIdCounts.get(legacyId) !== 1) {
+    console.warn('[WhatsApp] A legacy session ID is ambiguous; affected accounts must pair again.');
+    return false;
+  }
+
+  try {
+    fs.renameSync(legacyPath, currentPath);
+    return true;
+  } catch (error) {
+    console.error('[WhatsApp] Could not migrate a legacy session directory:', error.code || error.name);
     return false;
   }
 }
 
 async function restoreSessions() {
   const users = await getCollection('users');
-  const savedUsers = await users
-    .find({ whatsappNumber: { $exists: true, $type: 'string' } })
-    .project({ email: 1 })
+  const userRecords = await users
+    .find({ email: { $type: 'string' } })
+    .project({ email: 1, whatsappNumber: 1 })
     .toArray();
 
-  for (const user of savedUsers) {
-    const email = typeof user.email === 'string' ? user.email.trim().toLowerCase() : '';
-    if (!email || clients.has(email) || !hasSavedSession(email)) continue;
+  const legacyIdCounts = new Map();
+  for (const user of userRecords) {
+    const legacyId = legacyClientIdForEmail(user.email);
+    legacyIdCounts.set(legacyId, (legacyIdCounts.get(legacyId) || 0) + 1);
+  }
+
+  for (const user of userRecords) {
+    const email = normalizeEmail(user.email);
+    if (!email || typeof user.whatsappNumber !== 'string' || clients.has(email)) continue;
     if (clients.size >= config.maxWhatsAppSessions) {
       console.warn('[WhatsApp] Some saved sessions were not restored because the configured limit was reached.');
       break;
     }
+    if (!hasSavedSession(user.email, legacyIdCounts)) continue;
     createClient(email);
   }
 
