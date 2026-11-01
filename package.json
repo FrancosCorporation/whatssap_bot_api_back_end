@@ -34,6 +34,7 @@
   "overrides": {
     "whatsapp-web.js": {
       "puppeteer": "25.13.0"
-    }
+    },
+    "body-parser": "^2.4.0"
   }
 }
