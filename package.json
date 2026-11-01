@@ -35,6 +35,8 @@
     "whatsapp-web.js": {
       "puppeteer": "25.13.0"
     },
-    "body-parser": "^2.4.0"
+    "body-parser": "^2.4.0",
+    "zod": "^4.6.6",
+    "ip-address": "^10.7.4"
   }
 }
