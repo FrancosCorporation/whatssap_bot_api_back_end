@@ -37,6 +37,9 @@
     },
     "body-parser": "^2.4.0",
     "zod": "^4.6.6",
-    "ip-address": "^10.7.4"
+    "ip-address": "^10.7.4",
+    "archiver-utils": {
+      "glob": "^14.0.2"
+    }
   }
 }
